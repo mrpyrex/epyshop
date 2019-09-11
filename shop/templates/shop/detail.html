@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% load humanize %} {% block content %}
+<div class="container">
+  <div class="row my-3">
+    <div class="col-md-8">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+    </div>
+    <div class="col-md-4">
+      <h1 class="display-3">{{ product.name }}</h1>
+      <h2>
+        <a href="{{ product.c.get_absolute_url }}">{{ product.category }}</a>
+      </h2>
+      <td class="num">&#8358; {{ product.price | intcomma }}</td>
+      {% if product.stock <= 0 %}
+      <p>Out of stock</p>
+      {% else %}
+      <form method="POST" action="{% url 'cart:cart_add' product.id %}">
+        {% csrf_token %}
+        {{ cart_product_form }}
+        <input type="submit" value="Add To Cart" />
+      </form>
+      {% endif %}
+      {{ product.description | linebreaks }}
+    </div>
+  </div>
+</div>
+{% endblock %}
