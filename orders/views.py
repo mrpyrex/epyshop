@@ -12,20 +12,27 @@ from django.conf import settings
 @login_required
 def order_create(request):
     cart = Cart(request)
-    address = Address.objects.get(
-        customer=request.user, address_type='billing')
     customer = request.user
-    billing_address1 = address.billing_address1
-    billing_address2 = address.billing_address2
-    phone = address.phone
-    country = address.country
-    state = address.state
-    city = address.city
-    post_code = address.post_code
+    try:
+        address = Address.objects.get(
+            customer=request.user, address_type='billing')
+        billing_address1 = address.billing_address1
+        billing_address2 = address.billing_address2
+        phone = address.phone
+        country = address.country
+        state = address.state
+        city = address.city
+        post_code = address.post_code
+
+    except ObjectDoesNotExist:
+        return redirect('address:create')
 
     try:
         order = Order.objects.create(billing_address1=billing_address1, customer=customer, billing_address2=billing_address2,
                                      phone=phone, country=country, state=state, city=city, post_code=post_code)
+        if cart.coupon:
+            order.coupon = cart.coupon
+            order.discount = cart.coupon.discount
         order.save()
         for item in cart:
             OrderItem.objects.create(order=order,
@@ -39,7 +46,6 @@ def order_create(request):
             products.save()
             cart.clear()
             request.session['order_id'] = order.id
-            # return redirect('cart:cart_detail')
             return redirect(reverse('payment:process'))
 
     except ObjectDoesNotExist:

@@ -1,7 +1,10 @@
 from django.db import models
+from decimal import Decimal
+from django.core.validators import MaxValueValidator, MinValueValidator
 from shop.models import Product
 from django.contrib.auth.models import User
 from payment.models import Payment
+from coupons.models import Coupon
 
 # Create your models here.
 
@@ -22,6 +25,10 @@ class Order(models.Model):
     city = models.CharField(max_length=200, blank=True)
     post_code = models.CharField(max_length=200, blank=True)
     paid = models.BooleanField(default=False)
+    coupon = models.ForeignKey(
+        Coupon, related_name='orders', null=True, blank=True, on_delete=models.SET_NULL)
+    discount = models.IntegerField(
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     class Meta:
         ordering = ('-created_at',)
@@ -30,7 +37,8 @@ class Order(models.Model):
         return f'Order {self.id}'
 
     def get_total_cost(self):
-        return sum(item.get_cost() for item in self.items.all())
+        total_cost = sum(item.get_cost() for item in self.items.all())
+        return total_cost - total_cost * (self.discount / Decimal('100'))
 
 
 class OrderItem(models.Model):

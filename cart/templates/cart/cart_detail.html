@@ -43,7 +43,7 @@
               {% csrf_token %}
               {{ item.update_quantity_form.quantity }}
               {{ item.update_quantity_form.update }}
-              <button class="btn btn-primary btn-rounded btn-sm" type="submit" value="update">
+              <button class="badge badge-primary" type="submit" value="update">
                 Update
               </button>
             </form>
@@ -73,6 +73,10 @@
         </tr>
         {% endif %}
         <!-- Coupon </> -->
+        <tr>
+          <td colspan="6"><a class="btn btn-primary" href="{% url 'shop:shop_home' %}">Continue Shopping</a></td>
+          <td><a class="btn btn-danger" href="{% url 'orders:order_create' %}">Checkout</a></td>
+        </tr>
       </tbody>
     </table>
     <form action="{% url 'coupons:apply' %}" method="POST">
@@ -82,10 +86,7 @@
     </form>
 
   </div>
-  <p>
-    <a class="btn btn-primary mr-2" href="{% url 'shop:shop_home' %}">Continue Shopping</a>
-    <a class="btn btn-danger" href="{% url 'orders:order_create' %}">Checkout</a>
-  </p>
+
   {% endif %}
   <!-- Cart </> -->
 

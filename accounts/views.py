@@ -15,8 +15,6 @@ def register(request):
             register_user = User.objects.get(username=username)
             customer_group = Group.objects.get(name='Customer')
             customer_group.user_set.add(register_user)
-            messages.success(
-                request, f'Account created for {username}! You can now login.')
             return redirect('login')
     else:
         form = UserRegisterForm()

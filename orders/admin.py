@@ -46,15 +46,15 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer', 'phone',
-                    'billing_address1', 'amount', 'billing_address2', 'city', 'created_at', 'updated_at', 'paid']
+                    'billing_address1', 'amount', 'coupon', 'billing_address2', 'city', 'created_at', 'updated_at', 'paid']
     list_filter = ['created_at', 'updated_at', 'paid']
     inlines = [OrderItemInline]
     actions = [export_to_csv]
     readonly_fields = ['id', 'amount', 'ref', 'phone',
-                       'billing_address1', 'billing_address2', 'city', 'created_at', 'updated_at', 'paid']
+                       'billing_address1', 'billing_address2', 'coupon', 'city', 'created_at', 'updated_at', 'paid']
     fieldsets = [
         ('ORDER INFORMATION', {'fields': [
-         'id', 'ref', 'created_at', 'amount']}),
+         'id', 'ref', 'created_at', 'amount', 'coupon']}),
         ('SHIPPING INFORMATION', {'fields': ['phone',
                                              'billing_address1', 'billing_address2', 'city']})
     ]
